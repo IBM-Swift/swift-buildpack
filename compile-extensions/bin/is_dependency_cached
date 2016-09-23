@@ -17,7 +17,6 @@
 require 'yaml'
 require 'compile_extensions'
 require 'fileutils'
-require 'fileutils'
 
  # Process arguments/parameters to the script
 original_url      = ARGV[0]
