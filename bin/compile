@@ -33,7 +33,6 @@ DEFAULT_SWIFT_VERSION=3.0
 CLANG_VERSION=3.8.0
 compile_buildpack_dir=$(cd $(dirname $0); cd ..; pwd)
 compile_buildpack_bin=$compile_buildpack_dir/bin
-dependency_buildpack_dir=$compile_buildpack_dir/dependencies
 
 # Check environment support
 $compile_buildpack_dir/compile-extensions/bin/check_stack_support
@@ -185,33 +184,17 @@ rm -rf $BUILD_DIR/.build
 
 status "Cleaning up cache folder"
 
-for f in $(ls -1 $dependency_buildpack_dir); do
-  if [[ "$f" == *"$SWIFT_NAME_VERSION"* ]]; then
-    for cacheentry in $(ls -1 $CACHE_DIR); do
-      if [[ "$cacheentry" == *"$SWIFT_NAME_VERSION"* ]]; then
-        status "Built-in Swift dependency is in the cache.  Need to remove it"
-        rm -rf "$CACHE_DIR"/"$cacheentry"
-        break
-      fi
-    done
-  fi
-done
-
-for f in $(ls -1 $dependency_buildpack_dir); do
-  if [[ "$f" == *"$CLANG_VERSION"* ]]; then
-    if  [[ "$f" == *"clang"* ]]; then
-      for cacheentry in $(ls -1 $CACHE_DIR); do
-        if [[ "$cacheentry" == *"$CLANG_VERSION"* ]]; then
-          if [[ "$cacheentry" == *"clang"* ]]; then
-            status "Built-in Clang dependency is in the cache.  Need to remove it"
-            rm -rf "$CACHE_DIR"/"$cacheentry"
-            break
-          fi
-        fi
-      done
-    fi
-  fi
-done
+#Loop over the contents of CACHE_DIR
+# $cacheentry is the current element we are looping over
+status `ls -1 $CACHE_DIR`
+#for cacheentry in $(ls -1 $CACHE_DIR); do
+#  status "in loop"
+#  if [ $compile_buildpack_dir/compile-extensions/bin/is_dependency_cached $cacheentry ]; then
+#    status "Removing cache entry $CACHE_DIR/$cacheentry"
+#    rm $CACHE_DIR/$cacheentry
+#  fi
+#done
+#status `ls -1 $CACHE_DIR`
 
 # Setup application environment
 PROFILE_PATH="$BUILD_DIR/.profile.d/swift.sh"

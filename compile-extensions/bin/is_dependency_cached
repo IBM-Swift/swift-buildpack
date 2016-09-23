@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+##
+# Copyright IBM Corporation 2016
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##
+require 'yaml'
+require 'compile_extensions'
+require 'fileutils'
+require 'fileutils'
+
+ # Process arguments/parameters to the script
+original_url      = ARGV[0]
+
+# Compute variables
+manifest_location = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "manifest.yml"))
+cache_path        = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'dependencies'))
+manifest          = YAML.load_file(manifest_location)
+dependencies      = CompileExtensions::Dependencies.new(manifest)
+translated_uri    = dependencies.find_translated_url(original_url)
+
+# If url could not be translated OR cache folder does not exist, then dependency is not in the internal/static cache
+if translated_uri.nil? || !(File.exist? cache_path)
+     exit 1
+end
+
+file_path = File.join(cache_path, translated_uri.gsub(/[\/:]/, '_'))
+exit 1 unless File.exist? file_path
