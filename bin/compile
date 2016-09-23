@@ -189,7 +189,7 @@ status "Cleaning up cache folder"
 status `ls -1 $CACHE_DIR`
 for cacheentry in $(ls -1 $CACHE_DIR); do
   status "in loop"
-  if [ $compile_buildpack_dir/compile-extensions/bin/is_dependency_cached $cacheentry ]; then
+  if ($compile_buildpack_dir/compile-extensions/bin/is_dependency_cached $cacheentry); then
     status "Removing cache entry $CACHE_DIR/$cacheentry"
     rm $CACHE_DIR/$cacheentry
   fi
