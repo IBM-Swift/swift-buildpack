@@ -186,14 +186,9 @@ status "Cleaning up cache folder"
 
 #Loop over the contents of CACHE_DIR
 # $cacheentry is the current element we are looping over
-status `ls -1 $CACHE_DIR`
-for cacheentry in $(ls -1 $CACHE_DIR); do
-  if ($compile_buildpack_dir/compile-extensions/bin/is_dependency_cached $cacheentry); then
-    status "Removing cache entry $CACHE_DIR/$cacheentry"
-    rm $CACHE_DIR/$cacheentry
-  fi
-done
-status `ls -1 $CACHE_DIR`
+status "Cache dir = $(ls -1 $CACHE_DIR)"
+$compile_buildpack_dir/compile-extensions/bin/is_dependency_cached $CACHE_DIR
+status "Cache dir = $(ls -1 $CACHE_DIR)"
 
 # Setup application environment
 PROFILE_PATH="$BUILD_DIR/.profile.d/swift.sh"
