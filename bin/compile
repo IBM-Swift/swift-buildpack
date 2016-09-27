@@ -64,7 +64,7 @@ for DEB in $(ls -1 $compile_buildpack_dir/binary-dependencies/*.deb); do
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
 
-if [ -f $CACHE_DIR ]; then
+if [ -d $CACHE_DIR ]; then
   status "Contents of cache dir = `ls -alR $CACHE_DIR`"
 fi
 
@@ -83,12 +83,18 @@ if [ -f $BUILD_DIR/Aptfile ]; then
       status "$PACKAGE already installed."
       continue
     fi
+    
+    if [ -f $APT_CACHE_DIR/archives/$PACKAGE*.deb ]; then
+      status "$PACKAGE in Aptfile has already installed."
+      continue
+    fi
+
     status "Fetching .debs for $PACKAGE"
     apt-get $APT_OPTIONS -y --force-yes -d install --reinstall $PACKAGE | indent
   done
 
   for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
-    status "Installing $(basename $DEB)"
+    status "Installing $(basename $DEB) into build dir."
     dpkg -x $DEB $BUILD_DIR/.apt/
   done
 else
