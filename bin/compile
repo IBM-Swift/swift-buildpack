@@ -196,9 +196,9 @@ status "Cleaning up cache folder"
 
 #Loop over the contents of CACHE_DIR
 # $cacheentry is the current element we are looping over
-status "Cache dir = $(ls -1 $CACHE_DIR)"
+status "Cache dir (before) = $(ls -1 $CACHE_DIR)"
 $compile_buildpack_dir/compile-extensions/bin/clean_cache $CACHE_DIR
-status "Cache dir = $(ls -1 $CACHE_DIR)"
+status "Cache dir (after) = $(ls -1 $CACHE_DIR)"
 
 # Setup application environment
 PROFILE_PATH="$BUILD_DIR/.profile.d/swift.sh"
