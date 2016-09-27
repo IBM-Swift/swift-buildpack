@@ -64,6 +64,10 @@ for DEB in $(ls -1 $compile_buildpack_dir/binary-dependencies/*.deb); do
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
 
+if [ -f $CACHE_DIR ]; then
+  status "Contents of cache dir = `ls -alR $CACHE_DIR`"
+fi
+
 # Install any application specific system dependencies
 if [ -f $BUILD_DIR/Aptfile ]; then
   status "Aptfile found."
@@ -187,7 +191,7 @@ status "Cleaning up cache folder"
 #Loop over the contents of CACHE_DIR
 # $cacheentry is the current element we are looping over
 status "Cache dir = $(ls -1 $CACHE_DIR)"
-$compile_buildpack_dir/compile-extensions/bin/is_dependency_cached $CACHE_DIR
+$compile_buildpack_dir/compile-extensions/bin/clean_cache $CACHE_DIR
 status "Cache dir = $(ls -1 $CACHE_DIR)"
 
 # Setup application environment
