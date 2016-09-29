@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+##
+# Copyright IBM Corporation 2016
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##
+$LOAD_PATH << File.expand_path('../../lib', __FILE__)
+require 'yaml'
+require 'compile_extensions'
+require 'fileutils'
+
+cache_dir = ARGV[0]
+
+# Compute variables
+manifest_location = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "manifest.yml"))
+cache_path        = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'dependencies'))
+manifest          = YAML.load_file(manifest_location)
+dependencies      = CompileExtensions::Dependencies.new(manifest)
+
+files = Dir.glob("#{cache_dir}/*")
+files.each do |file_name|
+  output = file_name.gsub(/#{cache_dir}\//, '')
+  output.start_with?("clang")? output.concat(".tar.xz") : output.concat(".tar.gz")
+
+  translated_uri    = dependencies.find_translated_url(output)
+  if !translated_uri.nil?
+    file_path = File.join(cache_path, translated_uri.gsub(/[\/:]/, '_'))
+    if File.exist?(file_path)
+  	  FileUtils.rm_rf("#{file_name}")
+    end
+  end
+end

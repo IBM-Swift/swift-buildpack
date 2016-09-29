@@ -64,6 +64,10 @@ for DEB in $(ls -1 $compile_buildpack_dir/binary-dependencies/*.deb); do
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
 
+if [ -d $CACHE_DIR ]; then
+  status "Contents of cache dir = `ls -alR $CACHE_DIR`"
+fi
+
 # Install any application specific system dependencies
 if [ -f $BUILD_DIR/Aptfile ]; then
   status "Aptfile found."
@@ -79,12 +83,18 @@ if [ -f $BUILD_DIR/Aptfile ]; then
       status "$PACKAGE already installed."
       continue
     fi
+    
+    if [ -f $APT_CACHE_DIR/archives/$PACKAGE*.deb ]; then
+      status "$PACKAGE in Aptfile has already installed."
+      continue
+    fi
+
     status "Fetching .debs for $PACKAGE"
     apt-get $APT_OPTIONS -y --force-yes -d install --reinstall $PACKAGE | indent
   done
 
   for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
-    status "Installing $(basename $DEB)"
+    status "Installing $(basename $DEB) into build dir."
     dpkg -x $DEB $BUILD_DIR/.apt/
   done
 else
@@ -181,8 +191,14 @@ rm -rf $BUILD_DIR/.build
 # Cleaning up the cache folder to speed up the upload to droplet step.
 # This has no impact on the execution of the buildpack since [at the moment]
 # we are not taking advantage of the CACHE_DIR folder.
+
 status "Cleaning up cache folder"
-rm -rf $CACHE_DIR/*
+
+#Loop over the contents of CACHE_DIR
+# $cacheentry is the current element we are looping over
+status "Cache dir (before) = $(ls -1 $CACHE_DIR)"
+$compile_buildpack_dir/compile-extensions/bin/clean_cache $CACHE_DIR
+status "Cache dir (after) = $(ls -1 $CACHE_DIR)"
 
 # Setup application environment
 PROFILE_PATH="$BUILD_DIR/.profile.d/swift.sh"
