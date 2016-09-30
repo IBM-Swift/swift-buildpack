@@ -81,12 +81,14 @@ if translated_uri.nil?
   end
 end
 
+in_cache = 1
 if File.exist? cache_path
   file_path = File.join(cache_path, translated_uri.gsub(/[\/:]/, '_'))
   # Though this should not be needed, let's check that the dependency is actually found in the dependencies folder
   # If not found in the dependencies folder, we will not change the value of translated_uri and we will attempt to download it
   # This is useful if a dependency was manualy taken out of the dependencies folder
   if File.exist? file_path
+    in_cache = 0
     debug "DEBUG: Dependency found: '#{file_path}'"
     translated_uri = "file://#{file_path}"
   end
@@ -96,7 +98,7 @@ end
 generated_md5 = Digest::MD5.file(file_location).hexdigest
 
 debug "DEBUG: generated_md5 '#{generated_md5}'"
-puts file_location
+puts "#{file_location} #{in_cache}"
 
 if dependency_md5.nil?
   debug "DEBUG: md5 value for dependency could not be validated; more than likely the dependency is not found in the MANIFEST file"

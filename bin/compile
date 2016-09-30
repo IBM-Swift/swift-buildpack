@@ -128,23 +128,38 @@ CLANG_NAME_VERSION="clang-${CLANG_VERSION}"
 mkdir -p $CACHE_DIR
 cd $CACHE_DIR
 
+CACHE_ARRAY=()
 # Download and unpack Swift binaries
-if [[ ! -d "$CACHE_DIR/$SWIFT_NAME_VERSION" ]]; then
+if [[ ! -d "$SWIFT_NAME_VERSION" ]]; then
   status "Installing Swift $SWIFT_VERSION"
   mkdir -p $SWIFT_NAME_VERSION
-  dependency=$($compile_buildpack_dir/compile-extensions/bin/download_dependency $SWIFT_NAME_VERSION.tar.gz /tmp $DEFAULT_SWIFT_VERSION)
-  echo "Downloaded Swift" | indent
-  tar xz -C $SWIFT_NAME_VERSION -f $dependency
+  IF=' ' read -a my_array <<< $($compile_buildpack_dir/compile-extensions/bin/download_dependency $SWIFT_NAME_VERSION.tar.gz /tmp $DEFAULT_SWIFT_VERSION)
+  echo ${my_array[@]}
+  #dependency=$($compile_buildpack_dir/compile-extensions/bin/download_dependency $SWIFT_NAME_VERSION.tar.gz /tmp $DEFAULT_SWIFT_VERSION)
+  if [[ ${my_array[1]} = "0" ]]; then
+    echo "Cached Swift" | indent
+    CACHE_ARRAY+=($SWIFT_NAME_VERSION)
+  else
+    echo "Downloaded Swift" | indent
+  fi
+  tar xz -C $SWIFT_NAME_VERSION -f ${my_array[0]}
 fi
 SWIFT_PATH=$CACHE_DIR/$(echo $SWIFT_NAME_VERSION/swift*)
 
 # Download and unpack clang
-if [[ ! -d "$CACHE_DIR/$CLANG_NAME_VERSION" ]]; then
+if [[ ! -d "$CLANG_NAME_VERSION" ]]; then
   status "Installing Clang $CLANG_VERSION"
   mkdir -p $CLANG_NAME_VERSION
-  dependency=$($compile_buildpack_dir/compile-extensions/bin/download_dependency $CLANG_NAME_VERSION.tar.xz /tmp)
-  echo "Downloaded Clang" | indent
-  echo $dependency | xz -d -c --files | tar x -C $CLANG_NAME_VERSION &> /dev/null
+  #dependency=$($compile_buildpack_dir/compile-extensions/bin/download_dependency $CLANG_NAME_VERSION.tar.xz /tmp)
+  IF=' ' read -a my_array <<< $($compile_buildpack_dir/compile-extensions/bin/download_dependency $CLANG_NAME_VERSION.tar.xz /tmp)
+  echo ${my_array[@]}
+  if [[ ${my_array[1]} = "0" ]]; then
+    echo "Cached Clang" | indent
+    CACHE_ARRAY+=($CLANG_NAME_VERSION)
+  else
+    echo "Downloaded Clang" | indent
+  fi
+  echo ${my_array[0]} | xz -d -c --files | tar x -C $CLANG_NAME_VERSION &> /dev/null
 fi
 CLANG_PATH=$CACHE_DIR/$(echo $CLANG_NAME_VERSION/clang*)
 
@@ -182,7 +197,13 @@ rm -rf $BUILD_DIR/.build
 # This has no impact on the execution of the buildpack since [at the moment]
 # we are not taking advantage of the CACHE_DIR folder.
 status "Cleaning up cache folder"
-rm -rf $CACHE_DIR/*
+status "before `ls -al $CACHE_DIR`"
+for i in "${CACHE_ARRAY[@]}"
+do
+  rm -rf $CACHE_DIR/$i
+  #rm -rf $CACHE_DIR/*
+done
+status "after `ls -al $CACHE_DIR`"
 
 # Setup application environment
 PROFILE_PATH="$BUILD_DIR/.profile.d/swift.sh"
