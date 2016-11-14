@@ -177,7 +177,24 @@ else
   SWIFT_BUILD_OPTIONS=""
 fi
 
-#swift package fetch
+#this is needed to get all the packages down before compile
+status "Fetching swift packages."
+swift package fetch
+#need to parse the Package.swift files and install any dependencies it may need
+status "Getting package list to install."
+
+#need to disable this because the following command may fail
+set +o pipefail
+PACKAGES_TO_INSTALL=($(find . -type f -name "Package.swift" | xargs egrep -r "Apt *\(" | sed -e 's/^.*\.Apt *( *" *//' -e 's/".*$//' | sort | uniq))
+# turn the checking back on
+set -o pipefail
+if [ "${#PACKAGES_TO_INSTALL[@]}" -gt "0" ]; then
+  status "Packages to install ${PACKAGES_TO_INSTALL[@]}"
+  download_packages "${PACKAGES_TO_INSTALL[@]}"
+else
+  status "There are no extra packages to install."
+fi
+
 swift build --configuration release $SWIFT_BUILD_OPTIONS -Xcc -I$BUILD_DIR/.apt/usr/include -Xlinker -L$BUILD_DIR/.apt/usr/lib -Xlinker -L$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu -Xlinker -rpath=$BUILD_DIR/.apt/usr/lib | indent
 
 # These should be statically linked, seems a Swift bug.
