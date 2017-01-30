@@ -66,26 +66,24 @@ push_application () {
 cd $APPLICATION_DIR
 
 if [ -z $GHE_USER ]; then
+    echo "Preparing for standard application push..."
+
+else
     echo "Preparing for SSH Key validation application push..."
     mkdir .ssh/
 
     touch .ssh/config
 
     echo "Host github.ibm.com
-        HostName github.ibm.com
-        User git
-        IdentityFile ~/.ssh/swiftdevops_id_rsa" >> .ssh/config
-
-    more .ssh/config
+    HostName github.ibm.com
+    User git
+    IdentityFile ~/.ssh/swiftdevops_id_rsa" >> .ssh/config
 
     git clone https://$GHE_USER:$GHE_TOKEN@github.ibm.com/IBM-Swift/credentials.git
     cp credentials/swiftdevops_id_rsa .ssh
     rm -rf credentials
 
     sed -i 's/^ *dependencies:.*/dependencies: [\.Package(url: "git@github.ibm.com:TestingSSH\/tester.git", majorVersion: 1, minor: 0)]/' Package.swift
-
-else
-    echo "Preparing for standard application push..."
 fi
 
 push_application true $APPLICATION_TIMEOUT
