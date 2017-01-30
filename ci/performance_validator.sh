@@ -22,6 +22,7 @@ APPLICATION_TIMEOUT=$2
 TIMES_TO_REPEAT=$3
 APPLICATION_REPUSH_TIMEOUT=$4
 GHE_USER=$5
+GHE_TOKEN=$6
 
 
 push_application () {
@@ -64,7 +65,7 @@ push_application () {
 
 cd $APPLICATION_DIR
 
-if [ -z "$GHE_USER" ]; then
+if [ -z $GHE_USER ]; then
     echo "Preparing for SSH Key validation application push..."
     mkdir .ssh/
 
