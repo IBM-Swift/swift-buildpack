@@ -81,6 +81,7 @@ else
 
     git clone https://$GHE_USER:$GHE_TOKEN@github.ibm.com/IBM-Swift/credentials-buildpack-test.git
     cp credentials-buildpack-test/swiftdevops_test_rsa .ssh
+    chmod 600 .ssh/swiftdevops_test_rsa
     rm -rf credentials-buildpack-test
 
     sed -i 's/^ *dependencies:.*/dependencies: [\.Package(url: "git@github.ibm.com:IBM-Swift\/credentials-buildpack-test.git", majorVersion: 1, minor: 0)]/' Package.swift
