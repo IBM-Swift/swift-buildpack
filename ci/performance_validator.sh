@@ -77,13 +77,13 @@ else
     echo "Host github.ibm.com
     HostName github.ibm.com
     User git
-    IdentityFile ~/.ssh/swiftdevops_id_rsa" >> .ssh/config
+    IdentityFile ~/.ssh/swiftdevops_test_rsa" >> .ssh/config
 
-    git clone https://$GHE_USER:$GHE_TOKEN@github.ibm.com/IBM-Swift/credentials.git
-    cp credentials/swiftdevops_id_rsa .ssh
-    rm -rf credentials
+    git clone https://$GHE_USER:$GHE_TOKEN@github.ibm.com/IBM-Swift/credentials-buildpack-test.git
+    cp credentials-buildpack-test/swiftdevops_test_rsa .ssh
+    rm -rf credentials-buildpack-test
 
-    sed -i 's/^ *dependencies:.*/dependencies: [\.Package(url: "git@github.ibm.com:TestingSSH\/tester.git", majorVersion: 1, minor: 0)]/' Package.swift
+    sed -i 's/^ *dependencies:.*/dependencies: [\.Package(url: "git@github.ibm.com:IBM-Swift\/credentials-buildpack-test.git", majorVersion: 1, minor: 0)]/' Package.swift
 fi
 
 push_application true $APPLICATION_TIMEOUT
