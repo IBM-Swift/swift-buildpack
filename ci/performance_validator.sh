@@ -21,9 +21,6 @@ APPLICATION_DIR=$1
 APPLICATION_TIMEOUT=$2
 TIMES_TO_REPEAT=$3
 APPLICATION_REPUSH_TIMEOUT=$4
-GHE_USER=$5
-GHE_TOKEN=$6
-
 
 push_application () {
 	local DELETE_FLAG=$1
@@ -64,28 +61,6 @@ push_application () {
 }
 
 cd $APPLICATION_DIR
-
-if [ -z $GHE_USER ]; then
-    echo "Preparing for standard application push..."
-
-else
-    echo "Preparing for SSH Key validation application push..."
-    mkdir .ssh/
-
-    touch .ssh/config
-
-    echo "Host github.ibm.com
-    HostName github.ibm.com
-    User git
-    IdentityFile ~/.ssh/swiftdevops_test_rsa" >> .ssh/config
-
-    git clone https://$GHE_USER:$GHE_TOKEN@github.ibm.com/IBM-Swift/credentials-buildpack-test.git
-    cp credentials-buildpack-test/swiftdevops_test_rsa .ssh
-    chmod 600 .ssh/swiftdevops_test_rsa
-    rm -rf credentials-buildpack-test
-
-    sed -i 's/^ *dependencies:.*/dependencies: [\.Package(url: "git@github.ibm.com:IBM-Swift\/credentials-buildpack-test.git", majorVersion: 1, minor: 0)]/' Package.swift
-fi
 
 push_application true $APPLICATION_TIMEOUT
 passed=$?
