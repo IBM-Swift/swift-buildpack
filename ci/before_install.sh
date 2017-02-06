@@ -17,7 +17,7 @@
 
 
 # Install Cloud Foundry command line
-set -e
+set -ev
 
 BLUEMIX_REGION=$1
 BLUEMIX_USER=$2
