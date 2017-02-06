@@ -23,15 +23,10 @@ before_install:
   # Clone test repos
   - git clone https://github.com/IBM-Bluemix/Kitura-Starter
   - git clone -b bluemix-estado https://github.com/IBM-Bluemix/swift-helloworld.git
+  - git clone https://$GHE_USER:$GHE_TOKEN@github.ibm.com/IBM-Swift/credentials-buildpack-test.git
 
 script:
-  - set -e
-  - ./ci/performance_validator.sh Kitura-Starter $KITURA_STARTER_PUSH_TIME $TIMES_TO_REPEAT_TO_SUCCESS $KITURA_STARTER_REPUSH_TIME
-  - rm -rf Kitura-Starter
-  - ./ci/performance_validator.sh swift-helloworld $SWIFT_HELLOWORLD_PUSH_TIME $TIMES_TO_REPEAT_TO_SUCCESS $SWIFT_HELLOWORLD_REPUSH_TIME
-  - rm -rf swift-helloworld
-  # If all above steps succeeded, then create Git tags
-  - ./ci/create_git_tag.sh
+  - ./ci/execute_script.sh $KITURA_STARTER_PUSH_TIME $TIMES_TO_REPEAT_TO_SUCCESS $KITURA_STARTER_REPUSH_TIME $SWIFT_HELLOWORLD_PUSH_TIME $SWIFT_HELLOWORLD_REPUSH_TIME
 
 before_deploy:
   - export RELEASE_PKG_FILE=$(ls *.zip)
