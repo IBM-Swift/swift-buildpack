@@ -36,3 +36,5 @@ cf login -a https://$BLUEMIX_REGION -u $BLUEMIX_USER -p $BLUEMIX_PASS -s applica
 git clone https://github.com/IBM-Bluemix/Kitura-Starter
 git clone -b bluemix-estado https://github.com/IBM-Bluemix/swift-helloworld.git
 git clone https://$GHE_USER:$GHE_TOKEN@github.ibm.com/IBM-Swift/credentials-buildpack-test.git
+
+exit $?

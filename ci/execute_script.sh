@@ -35,3 +35,5 @@ sed -i 's/^ *dependencies:.*/dependencies: [\.Package(url: "git@github.ibm.com\:
 rm -rf swift-helloworld
 # If all above steps succeeded, then create Git tags
 ./ci/create_git_tag.sh
+
+exit $?
