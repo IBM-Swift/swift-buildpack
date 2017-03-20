@@ -58,6 +58,10 @@ if translated_uri.nil?
   # Determine snapshot type, swift version, url...
   if requested_swift_version.downcase.include? "development"
     snapshot_type = "development"
+      # Check if swift-3.1-branch snapshot
+      if requested_swift_version.downcase.include? "3.1"
+        snapshot_type = "swift-3.1-branch"
+      end
   else
     snapshot_type = requested_swift_version.downcase
     if snapshot_type.include? "preview"
