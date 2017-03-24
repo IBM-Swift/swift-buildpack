@@ -62,6 +62,7 @@ if translated_uri.nil?
       snapshot_type =
     else
       snapshot_type = "development"
+    end
   else
     snapshot_type = requested_swift_version.downcase
     if snapshot_type.include? "preview"
