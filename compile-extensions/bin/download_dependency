@@ -59,7 +59,7 @@ if translated_uri.nil?
   if requested_swift_version.downcase.include? "development"
     if /3.1/.match(requested_swift_version.downcase)
       STDERR.puts "-----> WARNING: CHRISTIAN"
-      snapshot_type =
+      snapshot_type = "swift-3.1-branch"
     else
       snapshot_type = "development"
     end
