@@ -219,7 +219,7 @@ else
   SWIFT_BUILD_OPTIONS=""
 fi
 
-if [ $BLUEMIX_APP_MGMT_ENABLE == *"debug"* ]; then
+if [[ $BLUEMIX_APP_MGMT_ENABLE == *"debug"* ]]; then
   BUILD_CONFIGURATION="debug"
 else
   BUILD_CONFIGURATION="release"
