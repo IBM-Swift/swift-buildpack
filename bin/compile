@@ -101,7 +101,10 @@ export PKG_CONFIG_PATH="$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:$BUIL
 # Copy pre-cached system level dependencies for Kitura                          #
 # ----------------------------------------------------------------------------- #
 status "Copying deb files to installation folder..."
-cp $BP_DIR/binary-dependencies/*.deb $APT_CACHE_DIR/archives
+deb_files=($BP_DIR/binary-dependencies/*.deb)
+if [ -f "${deb_files[0]}" ]; then
+  cp $BP_DIR/binary-dependencies/*.deb $APT_CACHE_DIR/archives
+fi
 
 # ----------------------------------------------------------------------------- #
 # Download system level dependencies for Kitura                                 #
@@ -219,7 +222,7 @@ else
   SWIFT_BUILD_OPTIONS=""
 fi
 
-if [[ "$INSTALL_BLUEMIX_APP_MGMT" == "true" ]] && [[ $BLUEMIX_APP_MGMT_ENABLE == *"debug"* ]]; then
+if [[ $BLUEMIX_APP_MGMT_ENABLE == *"debug"* ]]; then
   BUILD_CONFIGURATION="debug"
 else
   BUILD_CONFIGURATION="release"
@@ -242,8 +245,7 @@ find $BUILD_DIR/.build/$BUILD_CONFIGURATION -type f -perm /a+x -exec cp {} $BUIL
 status "Cleaning up build files"
 rm -rf $BUILD_DIR/.build
 
-# Remove /.ssh folders
-rm -rf $BUILD_DIR/.ssh
+# Remove /.ssh folder
 rm -rf ~/.ssh
 
 # ----------------------------------------------------------------------------- #
@@ -275,9 +277,12 @@ rm -rf $CACHE_DIR/$SWIFT_NAME_VERSION
 rm -rf $CACHE_DIR/$CLANG_NAME_VERSION
 rm -rf $CACHE_DIR/"$SWIFT_NAME_VERSION.tar.gz"
 rm -rf $CACHE_DIR/"$CLANG_NAME_VERSION.tar.xz"
-for DEB in $(ls -1 $BP_DIR/binary-dependencies/*.deb); do
-  rm $APT_CACHE_DIR/archives/$(basename $DEB)
-done
+deb_files=($BP_DIR/binary-dependencies/*.deb)
+if [ -f "${deb_files[0]}" ]; then
+  for DEB in deb_files; do
+    rm $APT_CACHE_DIR/archives/$(basename $DEB)
+  done
+fi
 # Remove items already cached in the buildpack package
 #for i in "${CACHED_ITEMS[@]}"
 #do

@@ -1,5 +1,5 @@
 ##
-# Copyright IBM Corporation 2016
+# Copyright IBM Corporation 2016,2017
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@ url_to_dependency_map:
 
 dependencies:
   - name: swift
-    version: 3.0.2
-    uri: https://swift.org/builds/swift-3.0.2-release/ubuntu1404/swift-3.0.2-RELEASE/swift-3.0.2-RELEASE-ubuntu14.04.tar.gz
-    md5: 7979301bf1163b07524d5f9144d3ce53
+    version: 3.1
+    uri: https://swift.org/builds/swift-3.1-release/ubuntu1404/swift-3.1-RELEASE/swift-3.1-RELEASE-ubuntu14.04.tar.gz
+    md5: e465766025ffb74a01d7a1ab4478fdfc
     cf_stacks:
       - cflinuxfs2
   - name: swift
-    version: 3.0.1
-    uri: https://swift.org/builds/swift-3.0.1-release/ubuntu1404/swift-3.0.1-RELEASE/swift-3.0.1-RELEASE-ubuntu14.04.tar.gz
-    md5: 4a5d82edb2f31aa3373b15faa973d2e1
+    version: 3.0.2
+    uri: https://swift.org/builds/swift-3.0.2-release/ubuntu1404/swift-3.0.2-RELEASE/swift-3.0.2-RELEASE-ubuntu14.04.tar.gz
+    md5: 7979301bf1163b07524d5f9144d3ce53
     cf_stacks:
       - cflinuxfs2
   - name: clang

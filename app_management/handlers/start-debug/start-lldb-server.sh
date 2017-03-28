@@ -16,9 +16,12 @@
 ##
 
 PORT=$1
+MIN_SEVER_PORT=$(( PORT + 1 ))
+MAX_SEVER_PORT=$(( MIN_SEVER_PORT + 1 ))
 APP_MGMT_DIR=$(dirname "$0")/../..
 
-while lldb-server platform --listen *:$PORT >>$HOME/../logs/lldb-server.log 2>&1; do
+#until lldb-server platform --port-offset=1024 --listen *:1024 --min-gdbserver-port 1025 --max-gdbserver-port 1026 --server>>$HOME/../logs/lldb-server.log 2>&1; do
+until lldb-server platform --port-offset=$PORT --listen *:$PORT --min-gdbserver-port $MIN_SEVER_PORT --max-gdbserver-port $MAX_SEVER_PORT --server>>$HOME/../logs/lldb-server.log 2>&1; do
     echo "lldb-server exited with exit code $?. Restarting it..."
     sleep 1
 done

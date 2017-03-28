@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 ##
-# Copyright IBM Corporation 2016
+# Copyright IBM Corporation 2016, 2017
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,7 +57,12 @@ if translated_uri.nil?
 
   # Determine snapshot type, swift version, url...
   if requested_swift_version.downcase.include? "development"
-    snapshot_type = "development"
+    # Check if requesting a branch development snapshot, 'swift-X.X-'
+    if /swift-\d\.\d-/.match(requested_swift_version.downcase)
+      snapshot_type = requested_swift_version.downcase[/swift-\d\.\d-/] + "branch"
+    else
+      snapshot_type = "development"
+    end
   else
     snapshot_type = requested_swift_version.downcase
     if snapshot_type.include? "preview"

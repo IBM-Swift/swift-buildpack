@@ -69,6 +69,11 @@ push_application false $APPLICATION_REPUSH_TIMEOUT
 passed_repush=$?
 cd ..
 
-! (( $passed | $passed_repush ));
+# Verify 200 from application route status code
+url=$(cf app Kitura-Starter | grep urls:)
+status=$(curl -s -o /dev/null -w '%{http_code}' ${url#urls: })
+[ "$status" = 200 ] ; url_success=$?
+
+! (( $passed | $passed_repush | $url_success ));
 
 exit $?

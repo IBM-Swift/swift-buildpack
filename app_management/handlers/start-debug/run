@@ -30,7 +30,7 @@ require 'utils/handler_utils.rb'
 require 'utils/simple_logger.rb'
 
 config = Utils::HandlerUtils.get_configuration('debug')
-port = config['port'] || DropletUtils.find_port(7777, 8777)
+port = config['port'] || DropletUtils.find_port(1024, 1124)
 
 # Start lldb-server process
 pid = spawn("#{APP_MGMT_DIR}/handlers/start-debug/start-lldb-server.sh #{port}", :out => "#{ENV['HOME']}/../logs/start-lldb-server.out", :err => "#{ENV['HOME']}/../logs/start-lldb-server.err")

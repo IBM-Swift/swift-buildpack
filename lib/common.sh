@@ -15,7 +15,7 @@
 ##
 
 # Global/common vars
-DEFAULT_SWIFT_VERSION=3.0.2
+DEFAULT_SWIFT_VERSION=3.1
 CLANG_VERSION=3.8.0
 
 error() {
@@ -107,6 +107,15 @@ download_dependency() {
 download_packages() {
   local packages=("$@")
   for package in "${packages[@]}"; do
+    # Check if package is installed as part of the root fs
+    if dpkg -l "$package" >/dev/null 2>&1; then
+      status "$package is already installed."
+      # Remove element from array
+      unset 'packages[${package}]'
+      packages=("${packages[@]}")
+      continue
+    fi
+
     # Check if CACHE_DIR already contains DEB file for package
     if [ -f "$APT_CACHE_DIR/archives/$package*.deb" ]; then
       status "$package was already downloaded."
@@ -133,10 +142,13 @@ download_packages() {
 }
 
 install_packages() {
-  for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
-    status "Installing $(basename $DEB)"
-    dpkg -x $DEB $BUILD_DIR/.apt/
-  done
+  deb_files=($APT_CACHE_DIR/archives/*.deb)
+  if [ -f "${deb_files[0]}" ]; then
+    for DEB in deb_files; do
+      status "Installing $(basename $DEB)"
+      dpkg -x $DEB $BUILD_DIR/.apt/
+    done
+  fi
 }
 
 get_swift_version() {
