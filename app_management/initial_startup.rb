@@ -20,18 +20,22 @@ app_dir = File.expand_path('..', File.dirname(__FILE__))
 
 app_mgmt_dir = File.join(app_dir, '.app-management')
 
+TEST = "HELLO!"
+
 $LOAD_PATH.unshift app_mgmt_dir
 
 require 'json'
 require_relative 'utils/handlers'
 require_relative 'utils/simple_logger'
 
-Utils::SimpleLogger.info("app_mgmt_dir2: #{app_mgmt_dir}")
+Utils::SimpleLogger.info("app_mgmt_dir1: #{app_mgmt_dir}")
 
 def handler_list
   return nil if ENV['BLUEMIX_APP_MGMT_ENABLE'].nil?
   ENV['BLUEMIX_APP_MGMT_ENABLE'].downcase.split('+').map(&:strip)
 end
+
+Utils::SimpleLogger.info("app_mgmt_dir2: #{app_mgmt_dir}")
 
 def start_runtime(app_dir)
   exec(".app-management/scripts/start #{ENV['PORT']}", chdir: app_dir)
@@ -72,7 +76,10 @@ def write_json(file, key, value)
   end
 end
 
+Utils::SimpleLogger.info("app_mgmt_dir4: #{app_mgmt_dir}")
+
 def startup_with_handlers
+  Utils::SimpleLogger.info("TEST: #{TEST}")
   Utils::SimpleLogger.info("app_mgmt_dir3: #{app_mgmt_dir}")
   handlers_dir = File.join(app_mgmt_dir, 'handlers')
 
