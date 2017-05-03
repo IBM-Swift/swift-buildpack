@@ -20,7 +20,11 @@ app_dir = File.expand_path('..', File.dirname(__FILE__))
 
 app_mgmt_dir = File.join(app_dir, '.app-management')
 
+Utils::SimpleLogger.info("app_mgmt_dir1: #{app_mgmt_dir}")
+
 $LOAD_PATH.unshift app_mgmt_dir
+
+Utils::SimpleLogger.info("app_mgmt_dir2: #{app_mgmt_dir}")
 
 require 'json'
 require_relative 'utils/handlers'
@@ -71,6 +75,7 @@ def write_json(file, key, value)
 end
 
 def startup_with_handlers
+  Utils::SimpleLogger.info("app_mgmt_dir3: #{app_mgmt_dir}")
   handlers_dir = File.join(app_mgmt_dir, 'handlers')
 
   handlers = Utils::Handlers.new(handlers_dir)
