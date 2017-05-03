@@ -1,18 +1,20 @@
 language: ruby
+dist: trusty
+
+dist: trusty
 
 rvm:
-  - 2.2
+  - "2.3.1"
 
-branches:
-  only:
-  - master
-  - develop
-  - deploy-release
-  - /^issue.*$/
+gemfile:
+  - cf.Gemfile
 
 before_install:
   # Install Cloud Foundry command line
   - set -e
+  - gem install bundler
+  - bundle install
+  - bundle exec rake
   - wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
   - echo "deb http://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
   - sudo apt-get update

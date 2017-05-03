@@ -44,7 +44,7 @@ load_packages_signature() {
 }
 
 get_cache_status() {
-  if ! ${SWIFT_PACKAGES_CACHE:-true}; then
+  if ! ${SWIFT_BUILD_DIR_CACHE:-true}; then
     echo "disabled by config"
   elif [ "$(create_swift_signature)" != "$(load_swift_signature)" ]; then
     echo "new swift signature"

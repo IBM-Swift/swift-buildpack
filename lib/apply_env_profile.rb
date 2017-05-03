@@ -21,12 +21,8 @@ require 'env_profile_applier'
 begin
   build_dir = ARGV[0]
   build_dir += '/' if build_dir[-1] != '/'
-  if !ENV['BP_LOG'].nil? &&  'true'.casecmp(ENV['BP_LOG']) == 0
-    log_env = true
-  else
-    log_env = false
-  end
+  log_env = !ENV['BP_LOG'].nil? && 'true'.casecmp(ENV['BP_LOG']).zero?
   EnvProfileApplier.new(build_dir, log_env).apply_env_profile
-rescue => e
-  puts "-----> WARN: Failed to apply Bluemix environment profiles"
+rescue
+  puts '-----> WARN: Failed to apply Bluemix environment profiles'
 end

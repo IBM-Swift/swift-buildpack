@@ -15,9 +15,7 @@
 ##
 
 module Utils
-
   class Handler
-
     PUBLIC = 'public'.freeze
     PROXY_REQUIRED = 'proxy_required'.freeze
     BACKGROUND = 'background'.freeze
@@ -38,10 +36,8 @@ module Utils
       # default is false
       if @info[BACKGROUND].nil?
         false
-      elsif @info[BACKGROUND]
-        true
       else
-        false
+        @info[BACKGROUND]
       end
     end
 
@@ -49,7 +45,5 @@ module Utils
       # default is true
       @info[PUBLIC].nil? || @info[PUBLIC]
     end
-
   end
-
 end

@@ -20,22 +20,17 @@ class StartCmdFinder
   end
 
   def find_start_cmd
-    procfile_file = @app_dir + 'Procfile'
-    start_cmd = ""
+    procfile_file = File.join(@app_dir, 'Procfile')
+    start_cmd = ''
 
-    if (File.exist?(procfile_file))
-      procfile_content = ''
-      File.open(procfile_file,'r') do |file|
-        while line = file.gets
-          procfile_content += line
-        end
-      end
+    if File.exist? procfile_file
+      procfile_content = File.open(procfile_file, 'r', &:read)
+      # verify this works with multiple lines via unit test
       if (matched = /web:\s+(.+)/.match(procfile_content))
         start_cmd = matched[1]
       end
     end
 
-    return start_cmd
+    start_cmd
   end
-
 end

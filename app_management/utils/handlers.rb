@@ -16,21 +16,21 @@
 
 require 'json'
 require 'set'
-require 'utils/handler'
-require 'utils/simple_logger'
+require_relative 'handler'
+require_relative 'simple_logger'
 
 module Utils
-
   class Handlers
-
     def initialize(handlers_dir, type = 'start')
       @handlers = {}
 
       Dir.glob("#{handlers_dir}/#{type}-*/info.json").each do |file|
         begin
-          info = JSON.load(File.new(file))
+          info = JSON.parse(File.open(file, 'r', &:read))
         rescue JSON::ParserError => e
           SimpleLogger.error("Error loading #{file}: #{e.message}")
+          # proceed to next handler if json could not be parsed
+          next
         end
 
         name = file[%r{#{type}-(.+)/}, 1]
@@ -87,7 +87,5 @@ module Utils
       end
       [sync, async]
     end
-
   end
-
 end

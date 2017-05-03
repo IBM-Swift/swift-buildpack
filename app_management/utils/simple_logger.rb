@@ -15,11 +15,8 @@
 ##
 
 module Utils
-
   class SimpleLogger
-
     class << self
-
       def warning(msg)
         $stderr.puts "-----> Warning: #{msg}"
       end
@@ -29,11 +26,8 @@ module Utils
       end
 
       def info(msg)
-        $stdout.puts "-----> #{msg.to_s}"
+        $stdout.puts "-----> #{msg}"
       end
-
     end
-
   end
-
 end

@@ -19,10 +19,11 @@ set -ev
 
 if [ "$TRAVIS_BRANCH" == "deploy-release" ]; then
   cd $TRAVIS_BUILD_DIR
-  gem install bundler
-  bundle install --gemfile=cf.Gemfile
-  BUNDLE_GEMFILE=cf.Gemfile bundle install
-  BUNDLE_GEMFILE=cf.Gemfile bundle update
+  # These lines are commented about because Ruby packages are installed at the beginning of the CI
+  #gem install bundler
+  #bundle install --gemfile=cf.Gemfile
+  #BUNDLE_GEMFILE=cf.Gemfile bundle install
+  #BUNDLE_GEMFILE=cf.Gemfile bundle update
   BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager --cached --use-custom-manifest manifest.yml
   export VERSION=`cat VERSION`
   export DATE=`date +"%Y%m%d-%H%M"`

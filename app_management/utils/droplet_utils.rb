@@ -19,9 +19,7 @@ require 'timeout'
 require 'socket'
 
 class DropletUtils
-
   private_class_method :new
-
   class << self
     # Return the (constant) name of the proxy config filename relative to the app dir. A glorified Global Constant
     #
@@ -71,6 +69,5 @@ class DropletUtils
       end
       raise "Unable to find free port. Starting port #{start_port} and ending port #{end_port}"
     end
-
   end
 end

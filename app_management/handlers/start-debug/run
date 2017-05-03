@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # Encoding: utf-8
+
 ##
 # Copyright IBM Corporation 2016,2017
 #
@@ -33,9 +34,9 @@ config = Utils::HandlerUtils.get_configuration('debug')
 port = config['port'] || DropletUtils.find_port(1024, 1124)
 
 # Start lldb-server process
-pid = spawn("#{APP_MGMT_DIR}/handlers/start-debug/start-lldb-server.sh #{port}", :out => "#{ENV['HOME']}/../logs/start-lldb-server.out", :err => "#{ENV['HOME']}/../logs/start-lldb-server.err")
+pid = spawn("#{APP_MGMT_DIR}/handlers/start-debug/start-lldb-server.sh #{port}", out: "#{ENV['HOME']}/../logs/start-lldb-server.out", err: "#{ENV['HOME']}/../logs/start-lldb-server.err")
 Process.detach(pid)
 sleep 1
 pid = `pidof lldb-server`.strip.to_i
 pgid = Process.getpgid(pid)
-Utils::SimpleLogger.info("lldb-server (pid: #{pid}) is listening on port #{port}.")
+Utils::SimpleLogger.info("lldb-server (pid: #{pid}, pgid: #{pgid}) is listening on port #{port}.")

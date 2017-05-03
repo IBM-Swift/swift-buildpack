@@ -23,6 +23,6 @@ begin
   build_dir = ARGV[0]
   build_dir += '/' if build_dir[-1] != '/'
   puts StartCmdFinder.new(build_dir).find_start_cmd
-rescue => e
-  puts ""
+rescue
+  puts ''
 end

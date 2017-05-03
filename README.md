@@ -3,7 +3,7 @@
 IBM Bluemix buildpack for Swift
 ===============================
 
-This is the Bluemix buildpack for Swift applications, powered by the Swift Package Manager (SPM). Though this buildpack was developed mainly for Bluemix, it can be used on any Cloud Foundry environment. This buildpack requires access to the Internet for downloading and installing several system level dependencies.
+This is the Bluemix buildpack for Swift applications, powered by the Swift Package Manager (SPM). Though this buildpack was developed mainly for Bluemix and the sample commands use the Bluemix [command line](http://clis.ng.bluemix.net/ui/home.html), it can be used on any Cloud Foundry environment. This buildpack requires access to the Internet for downloading and installing several system level dependencies.
 
 Check out the [Kitura-Starter](https://github.com/IBM-Bluemix/Kitura-Starter) for a fully working example of a Kitura-based server application that can be deployed to Bluemix (or any Cloud Foundry environment).
 
@@ -13,7 +13,9 @@ Usage
 Example usage (see the [Specify a Swift version](#specify-a-swift-version) section):
 
 ```shell
-$ cf push
+$ bx app push
+Invoking 'cf push'...
+
 Using manifest file /Users/olivieri/git/Kitura-Starter/manifest.yml
 
 Creating app Kitura-Starter in org roliv@us.ibm.com / space dev as roliv@us.ibm.com...
@@ -179,12 +181,12 @@ The buildpack will detect your app as Swift if it has a `Package.swift` file in 
 
 ### Version installed on Bluemix
 
-The latest version of the IBM Bluemix buildpack for Swift on Bluemix is [v2.0.5](https://github.com/IBM-Swift/swift-buildpack/releases/tag/2.0.5).
+The latest version of the IBM Bluemix buildpack for Swift on Bluemix is [v2.0.6](https://github.com/IBM-Swift/swift-buildpack/releases/tag/2.0.6).
 
-Please note that it is possible that the latest buildpack code contained in this repo hasn't yet been installed on Bluemix. If that happens to be the case and you'd like to leverage the latest buildpack code, you can do so by adding the `-b https://github.com/IBM-Swift/swift-buildpack` parameter to the `cf push` command, as shown below:
+Please note that it is possible that the latest buildpack code contained in this repo hasn't yet been installed on Bluemix. If that happens to be the case and you'd like to leverage the latest buildpack code, you can do so by adding the `-b https://github.com/IBM-Swift/swift-buildpack` parameter to the `bx app push` command, as shown below:
 
 ```shell
-cf push -b https://github.com/IBM-Swift/swift-buildpack
+bx app push -b https://github.com/IBM-Swift/swift-buildpack
 ```
 
 ### Procfile
@@ -221,7 +223,7 @@ command: <executable_name>
 
 ### What is the latest version of Swift supported?
 
-The latest version of Swift supported by this buildpack is ```3.1```.
+The latest version of Swift supported by this buildpack is ```3.1.1```.
 
 ### Specify a Swift version
 
@@ -229,13 +231,13 @@ You specify the version of Swift for your application using a `.swift-version` f
 
 ```shell
 $ cat .swift-version
-3.1
+3.1.1
 ```
 
 Please note that the swift_buildpack installed on Bluemix **caches** the following versions of the Swift binaries:
 
+- `3.1.1`
 - `3.1`
-- `3.0.2`
 
 If you'd like to use a different version of Swift [that is not cached] on Bluemix, you can specify it in the `.swift-version` file.  Please be aware that using a Swift version that is not cached increases the provisioning time of your app on Bluemix.
 
@@ -349,20 +351,20 @@ If you need to specify the path to header files for a system package installed b
 
 Previous versions of this buildpack provided the [libdispatch](https://github.com/apple/swift-corelibs-libdispatch) binaries for Swift development builds **prior** to 2016-08-23. However, current and future versions of this buildpack will **not** provide those binaries. Users should upgrade their applications to Swift 3.0, which already includes the libdispatch binaries.
 
-### Caching of the Packages folder
+### Caching of the .build directory
 
-For Swift versions prior to Swift 3.1, the Bluemix buildpack for Swift will cache the contents of the `Packages` folder to speed up the provisioning of your application the next time you execute the `cf push` command. If you'd prefer not to use this caching mechanism, you can disable it by executing the following command:
+Following the release of Swift 3.1, the Bluemix buildpack for Swift caches the contents of the `.build` folder to speed up the provisioning of your application the next time you execute the `bx app push` command. If you'd prefer not to use this caching mechanism, you can disable it by executing the following command:
 
 ```shell
-cf set-env <app_name> SWIFT_PACKAGES_CACHE false
-cf restage <app_name>
+bx app env-set <app_name> SWIFT_BUILD_DIR_CACHE false
+bx app restage <app_name>
 ```
 
-If at some point, you'd like to re-enable caching of the `Packages` folder, you can do so by executing:
+If at some point, you'd like to re-enable caching of the `.build` folder, you can do so by executing:
 
 ```shell
-cf set-env <app_name> SWIFT_PACKAGES_CACHE true
-cf restage <app_name>
+bx app env-set <app_name> SWIFT_BUILD_DIR_CACHE true
+bx app restage <app_name>
 ```
 
 Note that if at some point you change the contents of your `Package.swift` file, the buildpack will automatically refetch the dependencies and update the cache accordingly.
@@ -372,13 +374,13 @@ Note that if at some point you change the contents of your `Package.swift` file,
 If the buildpack preparation or compilation steps are failing, you can enable some debugging using the following command:
 
 ```shell
-cf set-env <app_name> BP_DEBUG true
+bx app env-set <app_name> BP_DEBUG true
 ```
 
 To deactivate:
 
 ```shell
-cf unset-env <app_name> BP_DEBUG
+bx app env-unset <app_name> BP_DEBUG
 ```
 
 Admin tasks
@@ -388,14 +390,14 @@ To install this buildpack:
 
 ```shell
 wget https://github.com/IBM-Swift/swift-buildpack/releases/download/v2.0.5/buildpack_swift_v2.0.5-20170406-2317.zip
-cf create-buildpack swift_buildpack buildpack_swift_v2.0.5-20170406-2317.zip <position>
+bx cf create-buildpack swift_buildpack buildpack_swift_v2.0.6-20170406-2317.zip <position>
 ```
 
 And to update it:
 
 ```shell
 wget https://github.com/IBM-Swift/swift-buildpack/releases/download/v2.0.5/buildpack_swift_v2.0.5-20170406-2317.zip
-cf update-buildpack swift_buildpack -p buildpack_swift_v2.0.5-20170406-2317.zip
+bx cf update-buildpack swift_buildpack -p buildpack_swift_v2.0.6-20170406-2317.zip
 ```
 
 For more details on installing buildpacks, see [Adding buildpacks to Cloud Foundry](https://docs.cloudfoundry.org/adminguide/buildpacks.html).

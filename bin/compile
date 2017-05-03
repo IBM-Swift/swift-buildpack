@@ -32,7 +32,7 @@ CACHE_DIR=$2
 BP_DIR=$(cd $(dirname $0); cd ..; pwd)
 compile_buildpack_bin=$BP_DIR/bin
 BUILDPACK_PATH=$BP_DIR
-PACKAGES_DIR="Packages"
+SWIFT_BUILD_DIR=.build
 # If leveraging CACHE_DIR for tar files, then we'd need CACHED_ITEMS
 #CACHED_ITEMS=()
 
@@ -178,7 +178,7 @@ restore_cache() {
   local cache_status="$(get_cache_status)"
   if [ "$cache_status" == "valid" ]; then
     status "Loading from cache:"
-    restore_cache_directories "$BUILD_DIR" "$CACHE_DIR" "$PACKAGES_DIR"
+    restore_cache_directories "$BUILD_DIR" "$CACHE_DIR" "$SWIFT_BUILD_DIR"
   else
     status "Skipping cache restore ($cache_status)"
   fi
@@ -242,11 +242,6 @@ cp $SWIFT_PATH/usr/lib/*.so.* $BUILD_DIR/.swift-lib
 status "Copying binaries to 'bin'"
 find $BUILD_DIR/.build/$BUILD_CONFIGURATION -type f -perm /a+x -exec cp {} $BUILD_DIR/.swift-bin \;
 
-status "Cleaning up build files"
-rm -rf $BUILD_DIR/.build
-
-# Remove /.ssh folder
-rm -rf ~/.ssh
 
 # ----------------------------------------------------------------------------- #
 # Copy Packages folder from BUILD_DIR to CACHE_DIR                              #
@@ -256,15 +251,22 @@ cache_build() {
   clear_cache
   # cf set-env swift-helloworld SWIFT_PACKAGES_CACHE true
   # cf restage swift-helloworld
-  if ! ${SWIFT_PACKAGES_CACHE:-true}; then
+  if ! ${SWIFT_BUILD_DIR_CACHE:-true}; then
     status "Skipping cache save (disabled by config)"
   else
     status "Saving cache (default):"
-    save_cache_directories "$BUILD_DIR" "$CACHE_DIR" "$PACKAGES_DIR"
+    save_cache_directories "$BUILD_DIR" "$CACHE_DIR" "$SWIFT_BUILD_DIR"
   fi
   save_signatures
 }
+# Cache packages before removing '.build' directory
 cache_build
+#status "Cleaning up build files"
+#rm -rf $BUILD_DIR/.build
+
+# Remove /.ssh folder
+rm -rf ~/.ssh
+
 
 # ----------------------------------------------------------------------------- #
 # Removing binaries and tar files from the CACHE_DIR to speed up                #
