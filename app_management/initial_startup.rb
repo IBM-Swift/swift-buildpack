@@ -16,9 +16,9 @@
 ##
 
 # points to /home/vcap/app
-app_dir = File.expand_path('..', File.dirname(__FILE__))
+APP_DIR = File.expand_path('..', File.dirname(__FILE__))
 
-APP_MGMT_DIR = File.join(app_dir, '.app-management')
+APP_MGMT_DIR = File.join(APP_DIR, '.app-management')
 
 TEST = "HELLO!"
 
@@ -78,7 +78,7 @@ def write_json(file, key, value)
 end
 
 
-def startup_with_handlers
+def startup_with_handlers(app_dir)
 
   Utils::SimpleLogger.info("app_mgmt_dir3: #{APP_MGMT_DIR}")
   handlers_dir = File.join(APP_MGMT_DIR, 'handlers')
@@ -119,9 +119,9 @@ def startup
   Utils::SimpleLogger.info("app_mgmt_dir10: #{APP_MGMT_DIR}")
 
   # No handlers are specified. Start the runtime normally.
-  start_runtime(app_dir) if handler_list.nil? || handler_list.empty?
+  start_runtime(APP_DIR) if handler_list.nil? || handler_list.empty?
   # Otherwise, start with handlers
-  startup_with_handlers unless handler_list.nil? || handler_list.empty?
+  startup_with_handlers(APP_DIR) unless handler_list.nil? || handler_list.empty?
 end
 
 # do not execute this block if file is "required" rather than being run directly
