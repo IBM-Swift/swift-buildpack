@@ -22,6 +22,8 @@ app_mgmt_dir = File.join(app_dir, '.app-management')
 
 TEST = "HELLO!"
 
+test_var = "HELLO2"
+
 $LOAD_PATH.unshift app_mgmt_dir
 
 require 'json'
@@ -116,6 +118,8 @@ end
 
 def startup
   Utils::SimpleLogger.info("App Management handlers: #{handler_list}")
+  Utils::SimpleLogger.info("test_var: #{test_var}")
+  Utils::SimpleLogger.info("TEST: #{TEST}")
   Utils::SimpleLogger.info("app_dir: #{app_dir}")
   Utils::SimpleLogger.info("app_mgmt_dir10: #{app_mgmt_dir}")
 
