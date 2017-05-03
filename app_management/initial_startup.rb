@@ -116,9 +116,6 @@ end
 
 def startup
   Utils::SimpleLogger.info("App Management handlers: #{handler_list}")
-  Utils::SimpleLogger.info("TEST: #{TEST}")
-  Utils::SimpleLogger.info("test_var: #{test_var}")
-  Utils::SimpleLogger.info("app_dir: #{app_dir}")
   Utils::SimpleLogger.info("app_mgmt_dir10: #{APP_MGMT_DIR}")
 
   # No handlers are specified. Start the runtime normally.
