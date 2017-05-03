@@ -17,12 +17,7 @@
 
 # points to /home/vcap/app
 APP_DIR = File.expand_path('..', File.dirname(__FILE__))
-
 APP_MGMT_DIR = File.join(APP_DIR, '.app-management')
-
-TEST = "HELLO!"
-
-test_var = "HELLO2"
 
 $LOAD_PATH.unshift APP_MGMT_DIR
 
@@ -30,13 +25,10 @@ require 'json'
 require_relative 'utils/handlers'
 require_relative 'utils/simple_logger'
 
-
 def handler_list
   return nil if ENV['BLUEMIX_APP_MGMT_ENABLE'].nil?
   ENV['BLUEMIX_APP_MGMT_ENABLE'].downcase.split('+').map(&:strip)
 end
-
-
 
 def start_runtime(app_dir)
   exec(".app-management/scripts/start #{ENV['PORT']}", chdir: app_dir)
@@ -79,8 +71,6 @@ end
 
 
 def startup_with_handlers(app_dir)
-
-  Utils::SimpleLogger.info("app_mgmt_dir3: #{APP_MGMT_DIR}")
   handlers_dir = File.join(APP_MGMT_DIR, 'handlers')
 
   handlers = Utils::Handlers.new(handlers_dir)
@@ -116,8 +106,6 @@ end
 
 def startup
   Utils::SimpleLogger.info("App Management handlers: #{handler_list}")
-  Utils::SimpleLogger.info("app_mgmt_dir10: #{APP_MGMT_DIR}")
-
   # No handlers are specified. Start the runtime normally.
   start_runtime(APP_DIR) if handler_list.nil? || handler_list.empty?
   # Otherwise, start with handlers
