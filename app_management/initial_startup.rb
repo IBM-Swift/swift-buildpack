@@ -20,15 +20,13 @@ app_dir = File.expand_path('..', File.dirname(__FILE__))
 
 app_mgmt_dir = File.join(app_dir, '.app-management')
 
-Utils::SimpleLogger.info("app_mgmt_dir1: #{app_mgmt_dir}")
-
 $LOAD_PATH.unshift app_mgmt_dir
-
-Utils::SimpleLogger.info("app_mgmt_dir2: #{app_mgmt_dir}")
 
 require 'json'
 require_relative 'utils/handlers'
 require_relative 'utils/simple_logger'
+
+Utils::SimpleLogger.info("app_mgmt_dir2: #{app_mgmt_dir}")
 
 def handler_list
   return nil if ENV['BLUEMIX_APP_MGMT_ENABLE'].nil?
