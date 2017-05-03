@@ -18,26 +18,25 @@
 # points to /home/vcap/app
 app_dir = File.expand_path('..', File.dirname(__FILE__))
 
-app_mgmt_dir = File.join(app_dir, '.app-management')
+APP_MGMT_DIR = File.join(app_dir, '.app-management')
 
 TEST = "HELLO!"
 
 test_var = "HELLO2"
 
-$LOAD_PATH.unshift app_mgmt_dir
+$LOAD_PATH.unshift APP_MGMT_DIR
 
 require 'json'
 require_relative 'utils/handlers'
 require_relative 'utils/simple_logger'
 
-Utils::SimpleLogger.info("app_mgmt_dir1: #{app_mgmt_dir}")
 
 def handler_list
   return nil if ENV['BLUEMIX_APP_MGMT_ENABLE'].nil?
   ENV['BLUEMIX_APP_MGMT_ENABLE'].downcase.split('+').map(&:strip)
 end
 
-Utils::SimpleLogger.info("app_mgmt_dir2: #{app_mgmt_dir}")
+
 
 def start_runtime(app_dir)
   exec(".app-management/scripts/start #{ENV['PORT']}", chdir: app_dir)
@@ -78,12 +77,11 @@ def write_json(file, key, value)
   end
 end
 
-Utils::SimpleLogger.info("app_mgmt_dir4: #{app_mgmt_dir}")
 
 def startup_with_handlers
-  Utils::SimpleLogger.info("TEST: #{TEST}")
-  Utils::SimpleLogger.info("app_mgmt_dir3: #{app_mgmt_dir}")
-  handlers_dir = File.join(app_mgmt_dir, 'handlers')
+
+  Utils::SimpleLogger.info("app_mgmt_dir3: #{APP_MGMT_DIR}")
+  handlers_dir = File.join(APP_MGMT_DIR, 'handlers')
 
   handlers = Utils::Handlers.new(handlers_dir)
 
@@ -104,7 +102,7 @@ def startup_with_handlers
       run_handlers(app_dir, handlers, valid_handlers, invalid_handlers)
 
       # Start proxy
-      write_json(File.join(app_mgmt_dir, 'app_mgmt_info.json'), 'proxy_enabled', 'true')
+      write_json(File.join(APP_MGMT_DIR, 'app_mgmt_info.json'), 'proxy_enabled', 'true')
       start_proxy(app_dir)
     end
   else
@@ -121,7 +119,7 @@ def startup
   Utils::SimpleLogger.info("TEST: #{TEST}")
   Utils::SimpleLogger.info("test_var: #{test_var}")
   Utils::SimpleLogger.info("app_dir: #{app_dir}")
-  Utils::SimpleLogger.info("app_mgmt_dir10: #{app_mgmt_dir}")
+  Utils::SimpleLogger.info("app_mgmt_dir10: #{APP_MGMT_DIR}")
 
   # No handlers are specified. Start the runtime normally.
   start_runtime(app_dir) if handler_list.nil? || handler_list.empty?
