@@ -69,7 +69,6 @@ def write_json(file, key, value)
   end
 end
 
-
 def startup_with_handlers(app_dir)
   handlers_dir = File.join(APP_MGMT_DIR, 'handlers')
 
