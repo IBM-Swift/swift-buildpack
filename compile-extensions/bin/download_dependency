@@ -75,7 +75,7 @@ if translated_uri.nil?
       end
     end
   end
-  debug "DEBUG: snapshot_type #{snapshot_type}"
+  debug "DEBUG: snapshot_type: #{snapshot_type}"
 
   swift_file = "#{requested_swift_version}-ubuntu14.04.tar.gz"
   translated_uri = "https://swift.org/builds/#{snapshot_type}/ubuntu1404/#{requested_swift_version}/#{swift_file}"
