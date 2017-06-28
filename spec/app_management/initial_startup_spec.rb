@@ -56,7 +56,7 @@ describe InitialStartup do
     end
   end
 
-  describe '#run' do 
+  describe '#run' do
     context 'there are no handlers' do
       it 'returns nil' do
         expect(run(app_dir, {}, false)).to be_nil
@@ -167,6 +167,58 @@ describe InitialStartup do
         json_hash = JSON.parse(File.read(File.join(app_dir, 'valid_syntax.json')))
         expect(json_hash['key1']).to eq('value1')
         expect(json_hash['newKey1']).to eq('newValue1')
+      end
+    end
+  end
+
+  describe '#startup_with_handlers' do
+    context 'proxy is required' do
+      context 'it is not the first index' do
+        before do
+          ENV['VCAP_APPLICATION'] =  {"instance_index": 1}.to_json
+        end
+
+        it 'calls start_runtime' do
+          allow_any_instance_of(Object).to receive(:handler_list).and_return(%w[handler1 handler2])
+          allow_any_instance_of(Utils::Handlers).to receive(:proxy_required?).and_return(true)
+          allow_any_instance_of(Object).to receive(:start_runtime).with(anything)
+          expect_any_instance_of(Object).to receive(:start_runtime).with(app_dir)
+          startup_with_handlers(app_dir)
+        end
+
+        after do
+          ENV['VCAP_APPLICATION'] = nil
+        end
+      end
+
+      context 'it is the first index' do
+        before do
+          ENV['VCAP_APPLICATION'] = {"instance_index": 0}.to_json
+        end
+
+        it 'calls run_handlers, write_json, and start_proxy' do
+          allow_any_instance_of(Object).to receive(:handler_list).and_return(%w[handler1 handler2])
+          allow_any_instance_of(Utils::Handlers).to receive(:proxy_required?).and_return(true)
+          expect_any_instance_of(Object).to receive(:run_handlers)
+          expect_any_instance_of(Object).to receive(:write_json)
+          expect_any_instance_of(Object).to receive(:start_proxy)
+          startup_with_handlers(app_dir)
+        end
+
+        after do
+          ENV['VCAP_APPLICATION'] = nil
+        end
+
+      end
+    end
+
+    context 'proxy not required' do
+      it 'calls run_handlers and start_runtime' do
+        allow_any_instance_of(Object).to receive(:handler_list).and_return(%w[handler1 handler2])
+        allow_any_instance_of(Utils::Handlers).to receive(:proxy_required?).and_return(false)
+        allow_any_instance_of(Object).to receive(:start_runtime).with(anything)
+        expect_any_instance_of(Object).to receive(:start_runtime).with(app_dir)
+        startup_with_handlers(app_dir)
       end
     end
   end
