@@ -2,6 +2,7 @@ require 'fileutils'
 require 'spec_helper'
 require 'rspec'
 require 'tmpdir'
+require 'timeout'
 require 'socket'
 require_relative '../../../app_management/utils/droplet_utils.rb'
 
@@ -27,6 +28,13 @@ describe DropletUtils do
         s = TCPServer.new server_port
         expect(DropletUtils.port_bound?(server_port)).to be_truthy
         s.close
+      end
+    end
+
+    context 'there is a timeout error' do
+      it 'returns false' do
+        Timeout.stub(:timeout).and_raise(Timeout::Error)
+        expect(DropletUtils.port_bound?(server_port)).not_to be_truthy
       end
     end
   end
