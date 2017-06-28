@@ -33,7 +33,7 @@ describe DropletUtils do
 
     context 'there is a timeout error' do
       it 'returns false' do
-        Timeout.stub(:timeout).and_raise(Timeout::Error)
+        allow(Timeout).to receive(:timeout).and_raise(Timeout::Error)
         expect(DropletUtils.port_bound?(server_port)).not_to be_truthy
       end
     end
