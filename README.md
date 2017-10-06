@@ -1,11 +1,11 @@
 [![Build Status - Develop](https://travis-ci.org/IBM-Swift/swift-buildpack.svg?branch=develop)](https://travis-ci.org/IBM-Swift/swift-buildpack)
 
-IBM Bluemix buildpack for Swift
+IBM Cloud buildpack for Swift
 ===============================
 
-This is the Bluemix buildpack for Swift applications, powered by the Swift Package Manager (SPM). Though this buildpack was developed mainly for Bluemix and the sample commands use the Bluemix [command line](http://clis.ng.bluemix.net/ui/home.html), it can be used on any Cloud Foundry environment. This buildpack requires access to the Internet for downloading and installing several system level dependencies.
+This is the IBM Cloud buildpack for Swift applications, powered by the Swift Package Manager (SPM). Though this buildpack was developed mainly for IBM Cloud and the sample commands use the IBM Cloud [command line](http://clis.ng.bluemix.net/ui/home.html), it can be used on any Cloud Foundry environment. This buildpack requires access to the Internet for downloading and installing several system level dependencies.
 
-Check out the [Kitura-Starter](https://github.com/IBM-Bluemix/Kitura-Starter) for a fully working example of a Kitura-based server application that can be deployed to Bluemix (or any Cloud Foundry environment).
+Check out the [Kitura-Starter](https://github.com/IBM-Bluemix/Kitura-Starter) for a fully working example of a Kitura-based server application that can be deployed to the IBM Cloud (or any Cloud Foundry environment).
 
 Usage
 -----
@@ -179,11 +179,11 @@ buildpack: swift_buildpack
 
 The buildpack will detect your app as Swift if it has a `Package.swift` file in the root.
 
-### Version installed on Bluemix
+### Version installed on the IBM Cloud
 
-The latest version of the IBM Bluemix buildpack for Swift on Bluemix is [v2.0.7](https://github.com/IBM-Swift/swift-buildpack/releases/tag/2.0.7).
+The latest version of the IBM Cloud buildpack for Swift on the IBM Cloud is [v2.0.8](https://github.com/IBM-Swift/swift-buildpack/releases/tag/2.0.8).
 
-Please note that it is possible that the latest buildpack code contained in this repo hasn't yet been installed on Bluemix. If that happens to be the case and you'd like to leverage the latest buildpack code, you can do so by adding the `-b https://github.com/IBM-Swift/swift-buildpack` parameter to the `bx app push` command, as shown below:
+Please note that it is possible that the latest buildpack code contained in this repo hasn't yet been installed on the IBM Cloud. If that happens to be the case and you'd like to leverage the latest buildpack code, you can do so by adding the `-b https://github.com/IBM-Swift/swift-buildpack` parameter to the `bx app push` command, as shown below:
 
 ```shell
 bx app push -b https://github.com/IBM-Swift/swift-buildpack
@@ -223,7 +223,7 @@ command: <executable_name>
 
 ### What is the latest version of Swift supported?
 
-The latest version of Swift supported by this buildpack is ```3.1.1```.
+The latest version of Swift supported by this buildpack is ```4.0```.
 
 ### Specify a Swift version
 
@@ -231,24 +231,24 @@ You specify the version of Swift for your application using a `.swift-version` f
 
 ```shell
 $ cat .swift-version
-3.1.1
+4.0
 ```
 
-Please note that the swift_buildpack installed on Bluemix **caches** the following versions of the Swift binaries:
+Please note that the swift_buildpack installed on the IBM Cloud **caches** the following versions of the Swift binaries:
 
+- `4.0`
 - `3.1.1`
-- `3.1`
 
-If you'd like to use a different version of Swift [that is not cached] on Bluemix, you can specify it in the `.swift-version` file.  Please be aware that using a Swift version that is not cached increases the provisioning time of your app on Bluemix.
+If you'd like to use a different version of Swift [that is not cached] on the IBM Cloud, you can specify it in the `.swift-version` file.  Please be aware that using a Swift version that is not cached increases the provisioning time of your app on the IBM Cloud.
 
-The [manifest.yml](https://github.com/IBM-Swift/swift-buildpack/blob/develop/manifest.yml) file contains the complete list of the Swift versions that are cached on Bluemix.
+The [manifest.yml](https://github.com/IBM-Swift/swift-buildpack/blob/develop/manifest.yml) file contains the complete list of the Swift versions that are cached on the IBM Cloud.
 
 Since there are frequent Swift language changes, it's advised that you pin your application to a specific Swift version. Once you have tested and migrated your code to a newer version of Swift, you can then update the `.swift-version` file with the appropriate Swift version.
 
 ### Installing additional system level dependencies
 Many Swift applications will not require the installation of any additional libraries. It's very common for today’s applications to have dependencies only on services that provide REST interfaces to interact with them (e.g., Cloudant, AlchemyAPI, Personality Insights, etc.).
 
-However, since dependencies vary from application to application, there could be cases when additional system packages may be required to compile and/or execute a Swift application. To address this need, the IBM Bluemix buildpack for Swift supports the installation of Ubuntu trusty packages using the `apt-get` utility. You can specify the Ubuntu packages that the should be installed by including an `Aptfile` in the root directory of your Swift application. Each line in the Aptfile should contain a valid Ubuntu package name. For instance, if your application has a dependency on the `jsonbot` package, then your Aptfile should look like this:
+However, since dependencies vary from application to application, there could be cases when additional system packages may be required to compile and/or execute a Swift application. To address this need, the IBM Cloud buildpack for Swift supports the installation of Ubuntu trusty packages using the `apt-get` utility. You can specify the Ubuntu packages that the should be installed by including an `Aptfile` in the root directory of your Swift application. Each line in the Aptfile should contain a valid Ubuntu package name. For instance, if your application has a dependency on the `jsonbot` package, then your Aptfile should look like this:
 
 ```shell
 $ cat Aptfile
@@ -257,7 +257,7 @@ jsonbot
 
 ### Installing closed source dependencies
 
-For those accessing private or enterprise host respositories, the IBM Bluemix buildpack for Swift now works with the Swift Package Manager to build these dependencies.  To leverage this capability, add a `.ssh` folder in the root of the application. This directory will need to contain the SSH keys needed to access the dependencies, as well as a `config` file referencing the keys. The example below shows the `config` and `Package.swift` files, respectively, which use the same SSH key to access private and public repositories in enterprise and standard GitHub accounts:
+For those accessing private or enterprise host respositories, the IBM Cloud buildpack for Swift now works with the Swift Package Manager to build these dependencies.  To leverage this capability, add a `.ssh` folder in the root of the application. This directory will need to contain the SSH keys needed to access the dependencies, as well as a `config` file referencing the keys. The example below shows the `config` and `Package.swift` files, respectively, which use the same SSH key to access private and public repositories in enterprise and standard GitHub accounts:
 
 ```shell
 $ cat config
@@ -353,7 +353,7 @@ Previous versions of this buildpack provided the [libdispatch](https://github.co
 
 ### Caching of the .build directory
 
-Following the release of Swift 3.1, the Bluemix buildpack for Swift caches the contents of the `.build` folder to speed up the provisioning of your application the next time you execute the `bx app push` command. If you'd prefer not to use this caching mechanism, you can disable it by executing the following command:
+Following the release of Swift 3.1, the IBM Cloud buildpack for Swift caches the contents of the `.build` folder to speed up the provisioning of your application the next time you execute the `bx app push` command. If you'd prefer not to use this caching mechanism, you can disable it by executing the following command:
 
 ```shell
 bx app env-set <app_name> SWIFT_BUILD_DIR_CACHE false
@@ -367,7 +367,7 @@ bx app env-set <app_name> SWIFT_BUILD_DIR_CACHE true
 bx app restage <app_name>
 ```
 
-Note that if at some point you change the contents of your `Package.swift` or `Package.pins` file, the buildpack will automatically refetch the dependencies and update the cache accordingly. Also, if you do not initially push a `Package.pins` file along with your application and you are using Swift 3.1 (or a later version), a new `Package.pins` file will be generated. It is recommended that you always push a `Package.pins` file along with your application (if using Swift 3.1 or later).
+Note that if at some point you change the contents of your `Package.swift` or `Package.resolved` (or `Package.pins` for older versions of Swift) file, the buildpack will automatically refetch the dependencies and update the cache accordingly. Also, if you do not initially push a `Package.resolved` file along with your application and you are using Swift 4.0 (or a later version), a new `Package.resolved` file will be generated. It is recommended that you always push a `Package.resolved` file along with your application (if using Swift 4.0 or later).
 
 ### Debugging
 
@@ -384,7 +384,7 @@ bx app env-unset <app_name> BP_DEBUG
 ```
 
 ### Installing Personal Package Archives
-The Bluemix buildpack for Swift does not support the installation of [Personal Package Archives](https://launchpad.net/ubuntu/+ppas) (PPAs). If your application requires the installation of one or more PPAs, we recommend using a different mechanism other than the Bluemix buildpack for Swift for provisioning your application to the Bluemix cloud. For instance, you could use [Docker and Kubernetes](https://console.bluemix.net/docs/containers/container_index.html) to provision your Swift application to Bluemix (in your `Dockerfile`, you would add the instructions for installing any necessary PPAs).
+The IBM Cloud buildpack for Swift does not support the installation of [Personal Package Archives](https://launchpad.net/ubuntu/+ppas) (PPAs). If your application requires the installation of one or more PPAs, we recommend using a different mechanism other than the IBM Cloud buildpack for Swift for provisioning your application to the IBM Cloud. For instance, you could use [Docker and Kubernetes](https://console.bluemix.net/docs/containers/container_index.html) to provision your Swift application to the IBM Cloud (in your `Dockerfile`, you would add the instructions for installing any necessary PPAs).
 
 Admin tasks
 -----------
@@ -392,15 +392,15 @@ Admin tasks
 To install this buildpack:
 
 ```shell
-wget https://github.com/IBM-Swift/swift-buildpack/releases/download/2.0.7/buildpack_swift_v2.0.7-20170630-2145.zip
-bx cf create-buildpack swift_buildpack buildpack_swift_v2.0.7-20170630-2145.zip <position>
+wget https://github.com/IBM-Swift/swift-buildpack/releases/download/2.0.8/buildpack_swift_v2.0.8-20170925-2341.zip
+bx cf create-buildpack swift_buildpack buildpack_swift_v2.0.8-20170925-2341.zip <position>
 ```
 
 And to update it:
 
 ```shell
-wget https://github.com/IBM-Swift/swift-buildpack/releases/download/2.0.7/buildpack_swift_v2.0.7-20170630-2145.zip
-bx cf update-buildpack swift_buildpack -p buildpack_swift_v2.0.7-20170630-2145.zip
+wget https://github.com/IBM-Swift/swift-buildpack/releases/download/2.0.8/buildpack_swift_v2.0.8-20170925-2341.zip
+bx cf update-buildpack swift_buildpack -p buildpack_swift_v2.0.8-20170925-2341.zip
 ```
 
 For more details on installing buildpacks, see [Adding buildpacks to Cloud Foundry](https://docs.cloudfoundry.org/adminguide/buildpacks.html).

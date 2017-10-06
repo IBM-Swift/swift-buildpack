@@ -43,7 +43,7 @@ source $BP_DIR/compile-extensions/lib/common
 # Check environment support
 $BP_DIR/compile-extensions/bin/check_stack_support
 # Load convenience functions like status(), echo(), and indent()
-source $BP_DIR/lib/common.sh
+source ${BP_DIR}/lib/common.sh
 # Load caching functions
 source ${BP_DIR}/lib/cache.sh
 # Load app management extension
@@ -190,7 +190,11 @@ restore_cache
 # ----------------------------------------------------------------------------- #
 cd $BUILD_DIR
 status "Fetching Swift packages and parsing Package.swift files..."
-swift package fetch | indent
+if [ $(is_swift_version_greater_or_equal_to 4.0) == "true" ]; then
+  swift package resolve | indent
+else  
+  swift package fetch | indent
+fi
 PACKAGES_TO_INSTALL=($(set +o pipefail;find . -type f -name "Package.swift" | xargs egrep -r "Apt *\(" | sed -e 's/^.*\.Apt *( *" *//' -e 's/".*$//' | sort | uniq; set -o pipefail))
 if [ "${#PACKAGES_TO_INSTALL[@]}" -gt "0" ]; then
   status "Additional packages to download: ${PACKAGES_TO_INSTALL[@]}"
@@ -231,33 +235,52 @@ status "Build config: $BUILD_CONFIGURATION"
 
 swift build --configuration $BUILD_CONFIGURATION $SWIFT_BUILD_OPTIONS -Xcc -I$BUILD_DIR/.apt/usr/include -Xlinker -L$BUILD_DIR/.apt/usr/lib -Xlinker -L$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu -Xlinker -rpath=$BUILD_DIR/.apt/usr/lib | indent
 
+# ----------------------------------------------------------------------------- #
+# Generate binary path.                                                         #
+# ----------------------------------------------------------------------------- #
+generate_bin_path() {
+  if [ $(is_swift_version_greater_or_equal_to 4.0) == "true" ]; then
+    local bin_path=$(swift build --configuration $BUILD_CONFIGURATION --show-bin-path)
+  else
+    local bin_path=$BUILD_DIR/.build/$BUILD_CONFIGURATION
+  fi
+  echo $bin_path
+}
+BIN_PATH=$(generate_bin_path)
+status "Bin path: $BIN_PATH"
+
 # These should be statically linked, seems a Swift bug.
 status "Copying dynamic libraries"
 cp $SWIFT_PATH/usr/lib/swift/linux/*.so $BUILD_DIR/.swift-lib
-cp $BUILD_DIR/.build/$BUILD_CONFIGURATION/*.so $BUILD_DIR/.swift-lib 2>/dev/null || true
+cp $BIN_PATH/*.so $BUILD_DIR/.swift-lib 2>/dev/null || true
 # Copying additional dynamic libraries
 cp $SWIFT_PATH/usr/lib/*.so $BUILD_DIR/.swift-lib
 cp $SWIFT_PATH/usr/lib/*.so.* $BUILD_DIR/.swift-lib
 
 status "Copying binaries to 'bin'"
-find $BUILD_DIR/.build/$BUILD_CONFIGURATION -type f -perm /a+x -exec cp {} $BUILD_DIR/.swift-bin \;
+find $BIN_PATH -type f -perm /a+x -exec cp {} $BUILD_DIR/.swift-bin \;
 
 # ----------------------------------------------------------------------------- #
-# Generate Package.pins if there is not one.                                    #
-# Applicable to Swift 3.1 (or later).                                           #
+# Generate Package.resolved or Package.pins (if there is not one).              #
+# Applicable to Swift 3.1 (and later versions).                                 #
 # ----------------------------------------------------------------------------- #
-generate_pins_file() {
-  if [[ ! -f $BUILD_DIR/Package.pins ]]; then
-    local swift_version="$(get_swift_version_from_cli)"
-    if [ $(echo $swift_version 3.1 | awk '{ print ($1 >= $2) ? "true" : "false" }') == "true" ]; then
+generate_pins_or_resolved_file() {
+  local swift_version="$(get_swift_version_from_cli)"
+  if [ $(is_swift_version_greater_or_equal_to 4.0) == "true" ]; then
+    if [ ! -f $BUILD_DIR/Package.resolved ]; then
+      swift package update
+      status "Generated Package.resolved (Swift $swift_version)"
+    fi
+  elif [ $(is_swift_version_greater_or_equal_to 3.1) == "true" ]; then
+    if [ ! -f $BUILD_DIR/Package.pins ]; then
       swift package pin --all
       status "Generated Package.pins (Swift $swift_version)"
-    else
-      status "Skipping generation of Package.pins (Swift $swift_version)"
     fi
+  elif [ ! -f $BUILD_DIR/Package.resolved ] || [ ! -f $BUILD_DIR/Package.pins ]; then
+     status "Skipping generation of Package.pins and Package.resolved (Swift $swift_version)"
   fi
 }
-generate_pins_file
+generate_pins_or_resolved_file
 
 # ----------------------------------------------------------------------------- #
 # Copy Packages folder from BUILD_DIR to CACHE_DIR                              #
