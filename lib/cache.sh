@@ -14,6 +14,9 @@
 # limitations under the License.
 ##
 
+# Load convenience functions like status(), echo(), and indent()
+source ${BP_DIR}/lib/common.sh
+
 create_swift_signature() {
   echo "$(swift --version)"
 }
@@ -22,19 +25,27 @@ create_package_signature() {
   echo "$(cat $BUILD_DIR/Package.swift)"
 }
 
-create_pins_signature() {
-  # Older versions of Swift do not use a Package.pins file
-  if test -f $BUILD_DIR/Package.pins; then
-    echo "$(cat $BUILD_DIR/Package.pins)"
+create_dependencies_signature() {  
+  if [ $(is_swift_version_greater_or_equal_to 4.0) == "true" ]; then
+    if test -f $BUILD_DIR/Package.resolved; then
+      echo "$(cat $BUILD_DIR/Package.resolved)"
+    else
+      echo ""
+    fi
   else
-    echo ""
+    # Versions before Swift 3.1 do not use a Package.pins file
+    if test -f $BUILD_DIR/Package.pins; then
+      echo "$(cat $BUILD_DIR/Package.pins)"
+    else
+      echo ""
+    fi
   fi
 }
 
 save_signatures() {
   echo "$(create_swift_signature)" > $CACHE_DIR/swift/.swift-signature
   echo "$(create_package_signature)" > $CACHE_DIR/swift/.package-signature
-  echo "$(create_pins_signature)" > $CACHE_DIR/swift/.pins-signature
+  echo "$(create_dependencies_signature)" > $CACHE_DIR/swift/.dependencies-signature
 }
 
 load_swift_signature() {
@@ -45,8 +56,8 @@ load_packages_signature() {
   load_signature ".package-signature"
 }
 
-load_pins_signature() {
-  load_signature ".pins-signature"
+load_dependencies_signature() {
+  load_signature ".dependencies-signature"
 }
 
 load_signature() {
@@ -65,8 +76,8 @@ get_cache_status() {
     echo "new swift signature"
   elif [ "$(create_package_signature)" != "$(load_packages_signature)" ]; then
     echo "new package signature"
-  elif [[ ! -z "$(create_pins_signature)" ]] && [ "$(create_pins_signature)" != "$(load_pins_signature)" ]; then
-    echo "new pins signature"
+  elif [[ ! -z "$(create_dependencies_signature)" ]] && [ "$(create_dependencies_signature)" != "$(load_dependencies_signature)" ]; then
+    echo "new dependencies signature"
   else
     echo "valid"
   fi

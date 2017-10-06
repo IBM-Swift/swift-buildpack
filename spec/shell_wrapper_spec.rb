@@ -14,7 +14,7 @@ describe SwiftBuildpack::ShellWrapper, :if => (/darwin/ =~ RUBY_PLATFORM).nil? d
   let(:apt_cache_dir) { Dir.mktmpdir }
   let(:buildpack_dir) { File.join(File.dirname(__FILE__), '../') }
   let(:common_shell_script) { File.join(buildpack_dir, 'lib', 'common.sh') }
-  let(:default_swift_version) { '3.1' }
+  let(:default_swift_version) { '4.0' }
 
   describe '#install_packages' do
     context 'deb file exists in $APT_CACHE_DIR/archives' do

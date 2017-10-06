@@ -5,7 +5,7 @@ AllCops:
     - vendor/**/*
     - spec/**/*
   TargetRubyVersion:
-    2.3.1
+    2.4
 Documentation:
   Enabled: false
 LineLength:
