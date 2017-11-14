@@ -231,12 +231,12 @@ You specify the version of Swift for your application using a `.swift-version` f
 
 ```shell
 $ cat .swift-version
-4.0
+4.0.2
 ```
 
 Please note that the swift_buildpack installed on the IBM Cloud **caches** the following versions of the Swift binaries:
 
-- `4.0`
+- `4.0.2`
 - `3.1.1`
 
 If you'd like to use a different version of Swift [that is not cached] on the IBM Cloud, you can specify it in the `.swift-version` file.  Please be aware that using a Swift version that is not cached increases the provisioning time of your app on the IBM Cloud.
