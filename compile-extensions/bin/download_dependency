@@ -77,8 +77,8 @@ if translated_uri.nil?
   end
   debug "DEBUG: snapshot_type: #{snapshot_type}"
 
-  swift_file = "#{requested_swift_version}-ubuntu14.04.tar.gz"
-  translated_uri = "https://swift.org/builds/#{snapshot_type}/ubuntu1404/#{requested_swift_version}/#{swift_file}"
+  swift_file = "#{requested_swift_version}-ubuntu16.04.tar.gz"
+  translated_uri = "https://swift.org/builds/#{snapshot_type}/ubuntu1604/#{requested_swift_version}/#{swift_file}"
   debug "DEBUG: Using the following URL for downloading the specified dependency: #{translated_uri}"
   status_code = `curl -I -s #{translated_uri} | head -n 1 | cut -d ' ' -f2`
   status_code = status_code.strip
