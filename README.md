@@ -349,7 +349,7 @@ If you need to specify the path to header files for a system package installed b
 -Xcc -I$BUILD_DIR/.apt/usr/include/<path to header files>
 ```
 
-If you need to specify environment variables to pass to the build, such as for a Kitura-NIO dependency (https://github.com/IBM-Swift/Kitura-NIO#using-kitura-nio), create a file with the name `.build_env` in the root project directory. Edit the file and add one environment variable per line. For example:
+If you need to specify environment variables to pass to the build, such as for a [Kitura-NIO dependency](https://github.com/IBM-Swift/Kitura-NIO#using-kitura-nio), create a file with the name `.build_env` in the root project directory. Edit the file and add one environment variable per line. For example:
 ```
 KITURA_NIO=1
 FOO=BAR
