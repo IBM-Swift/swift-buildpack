@@ -127,6 +127,12 @@ download_packages() {
 
   # Update packages array contents
   packages=("${pkgs[@]}")
+  apt-cache policy curl
+  apt-get $APT_OPTIONS update
+  apt-cache policy curl
+  apt-get $APT_OPTIONS install -y --reinstall curl
+  apt-get $APT_OPTIONS install -y libcurl4
+  apt-cache policy curl
   if [ ${#packages[@]} -eq 0 ]; then
     status "No additional packages to download."
   else
