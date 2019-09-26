@@ -303,11 +303,11 @@ cache_build() {
   clear_cache
   # cf set-env swift-helloworld SWIFT_PACKAGES_CACHE true
   # cf restage swift-helloworld
-  if ${SWIFT_BUILD_DIR_CACHE:-true}; then
+  if ! ${SWIFT_BUILD_DIR_CACHE:-false}; then
+    status "Skipping cache save (disabled by default)"
+  else
     status "Saving cache (enabled by config):"
     save_cache_directories "$BUILD_DIR" "$CACHE_DIR" "$SWIFT_BUILD_DIR"
-  else
-    status "Skipping cache save (disabled by default)"
   fi
   save_signatures
 }
